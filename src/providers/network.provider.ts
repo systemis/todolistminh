@@ -58,6 +58,7 @@ export class NetworkProvider {
       headers: {
         ...this.defaultNetWorkOptions,
         ...filterRequestConfig.headers,
+        "Upgrade-Insecure-Requests": 1,
       } as any,
     }).catch((e) => e.response);
 
