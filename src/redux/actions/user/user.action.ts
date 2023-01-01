@@ -1,4 +1,3 @@
-import { User } from "firebase/auth";
 import { SET_USER } from "@/src/redux/actions";
 
 /**
@@ -7,7 +6,7 @@ import { SET_USER } from "@/src/redux/actions";
  * @description
  * Update user profile in redux state
  */
-export const setUser = (user: User) => ({
+export const setUser = (user: unknown) => ({
   type: SET_USER,
   payload: user,
 });

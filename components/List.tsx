@@ -1,8 +1,8 @@
 import React, { ReactElement, ReactNode, useCallback } from 'react'
 import { useRecoilValue } from 'recoil'
 import {
-  SortableContainer as sortableContainer,
-  SortableElement as sortableElement,
+  SortableContainer as SortableContainerWrap,
+  SortableElement,
   SortEvent,
   SortEventWithTag
 } from 'react-sortable-hoc'
@@ -46,7 +46,7 @@ interface SortableItemProps {
   updateTodoValue: (idx: number, value: string) => void
 }
 
-const SortableItem = sortableElement<SortableItemProps>(({
+const SortableItem = SortableElement<SortableItemProps>(({
   todo,
   idx,
   updateTodoCompleted,
@@ -77,7 +77,7 @@ interface SortableContainerProps {
   children: ReactNode
 }
 
-const SortableContainer = sortableContainer<SortableContainerProps>(({ children }: SortableContainerProps) => {
+const SortableContainer = SortableContainerWrap<SortableContainerProps>(({ children }: SortableContainerProps) => {
   return <div className="cursor-pointer">{children}</div>
 })
 
@@ -106,10 +106,12 @@ const List = (): ReactElement | null => {
     <div className="mt-5 sm:mt-7">
       <div className="rounded">
         <div className="rounded">
+          {/** @ts-ignore */}
           <SortableContainer onSortEnd={onSortEnd} shouldCancelStart={shouldCancelStart} distance={10}>
             <motion.div variants={container} initial="hidden" animate="visible">
               <AnimatePresence>
                 {todos.map((todo, idx) => {
+                  {/** @ts-ignore */}
                   return <SortableItem
                     key={`item-${todo?.id}`}
                     index={idx}
@@ -123,7 +125,6 @@ const List = (): ReactElement | null => {
               </AnimatePresence>
             </motion.div>
           </SortableContainer>
-
           <motion.div
             className="text-sm px-6 py-4 flex items-center w-full bg-white dark:bg-dark_veryDarkDesaturatedBlue"
             initial={{ opacity: 0 }}
@@ -133,11 +134,9 @@ const List = (): ReactElement | null => {
             <div className="flex flex-1">
               <ItemsLeft />
             </div>
-
             <div className="hidden sm:flex">
               <ListFilter />
             </div>
-
             <div className="flex justify-end flex-1 text-light_darkGreyBlue hover:text-light_veryDarkGreyBlue dark:hover:text-white transition ease-linear cursor-pointer">
               <div onClick={clearCompletedTodos}>Clear Completed</div>
             </div>
