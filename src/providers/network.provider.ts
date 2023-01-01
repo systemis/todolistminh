@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 import { StorageProvider } from './storage.provider';
+const https = require("https");
 import qs from 'qs';
 export interface RequestConfig extends AxiosRequestConfig {
   responseHeader?: boolean;
@@ -55,10 +56,10 @@ export class NetworkProvider {
           return qs.stringify(params, { arrayFormat: 'repeat' });
         },
       },
+      httpsAgent: new https.Agent({ rejectUnauthorized: false }),
       headers: {
         ...this.defaultNetWorkOptions,
         ...filterRequestConfig.headers,
-        "Upgrade-Insecure-Requests": 1,
       } as any,
     }).catch((e) => e.response);
 
