@@ -11,6 +11,8 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.8.10/themes/smoothness/jquery-ui.css" type="text/css" />
+        <script type="text/javascript" src="//ajax.aspnetcdn.com/ajax/jquery.ui/1.8.10/jquery-ui.min.js"></script>
         </Head>
         <body>
           <Main />
