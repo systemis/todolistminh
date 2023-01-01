@@ -1,5 +1,5 @@
 export class StorageProvider {
-  private readonly PREFIX = process.env.HOST_NAME;
+  private readonly PREFIX = "TODOLISTAPP";
 
   /**
    * @param key
@@ -35,3 +35,5 @@ export class StorageProvider {
     return localStorage.removeItem(`${wPrefix ? '' : this.PREFIX}_${key}`);
   }
 }
+
+export const storageProvider = new StorageProvider();

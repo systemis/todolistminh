@@ -29,7 +29,10 @@ const LoginPage = () => {
         }`}
       >
         <div className="h-full w-full flex justify-center items-center">
-          <SignupForm />
+          <SignupForm
+            isAnimated={isAnimated}
+            setIsAnimated={setIsAnimated}
+          />
         </div>
       </div>
 

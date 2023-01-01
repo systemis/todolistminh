@@ -1,6 +1,7 @@
 import { call } from 'redux-saga/effects';
 import { SagaPayload } from '@/src/redux/entities';
 import { LoginDto, RegisterDto } from "@/src/dto";
+import { storageProvider } from "@/src/providers/storage.provider";
 import { userService } from "./user.service";
 
 /**
@@ -15,7 +16,10 @@ export function* login({
 }: SagaPayload<LoginDto, unknown>) {
   try {
     const loginResponse: unknown = yield call(userService.login, payload);
-    callback && callback(loginResponse);
+    storageProvider.setItem("hAccessToken", (loginResponse as any)?.headers?.["access-token"]);
+    storageProvider.setItem("client", (loginResponse as any)?.headers?.client);
+    storageProvider.setItem("uid", (loginResponse as any)?.headers?.uid);
+    callback && callback((loginResponse as any)?.data);
   } catch (err) {
     console.error(err);
     callback && callback(null);
@@ -36,7 +40,6 @@ export function* register({
     const registerResponse: unknown = yield call(userService.register, payload);
     callback && callback(registerResponse);
   } catch (err) {
-    console.error(err);
     callback && callback(null);
   }
 }

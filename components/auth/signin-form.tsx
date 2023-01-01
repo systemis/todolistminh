@@ -1,8 +1,37 @@
-import { useState } from 'react'
+import { FC } from "react";
+import { useRouter } from "next/router"
+import { LoginDto } from "@/src/dto";
+import { useForm } from "@/src/hooks/useForm";
+import { useMain } from "@/src/hooks/useMain";
+import { loginWithEmail } from "@/src/redux/actions";
+import { toast } from "react-toastify";
 
-const SigninForm = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+const SigninForm: FC = () => {
+  const router = useRouter();
+  const { dispatch } = useMain();
+  const {
+    register,
+    formState,
+    onSubmit,
+    errors,
+  } = useForm<LoginDto>({ identityClass: LoginDto });
+
+  /**
+   * @dev The function to submit register
+   * @param {RegisterDto} registerDto
+   * @returns
+   */
+  const handleLogin = async (loginDto: LoginDto) => {
+    dispatch(loginWithEmail(loginDto, (loginResponse) => {
+      if (!loginResponse) {
+        return toast("Login account failed!");
+      }
+      toast("Login account successfully!");
+      register("email", "");
+      register("password", "");
+      router.push("/");
+    }));
+  }
 
   return (
     <div className="selection:bg-indigo-500 selection:text-white">
@@ -22,7 +51,10 @@ const SigninForm = () => {
                     type="text"
                     className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-indigo-600"
                     placeholder="john@doe.com"
+                    value={formState?.email}
+                    onChange={(e) => register("email", e.target.value)}
                   />
+                  {errors?.email && <p className="text-gray-900 text-[10px]" style={{ color: "red" }}>{errors.email}</p>}
                   <label
                     htmlFor="email"
                     className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
@@ -37,7 +69,10 @@ const SigninForm = () => {
                     name="password"
                     className="peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-indigo-600"
                     placeholder="Password"
+                    value={formState?.password}
+                    onChange={(e) => register("password", e.target.value)}
                   />
+                  {errors?.password && <p className="text-gray-900 text-[10px]" style={{ color: "red" }}>{errors.password}</p>}
                   <label
                     htmlFor="password"
                     className="absolute left-0 -top-3.5 text-gray-600 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
@@ -50,6 +85,10 @@ const SigninForm = () => {
                   type="submit"
                   value="Sign in"
                   className="mt-20 px-8 py-4 uppercase rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-center block w-full focus:outline-none focus:ring focus:ring-offset-2 focus:ring-indigo-500 focus:ring-opacity-80 cursor-pointer"
+                  onClick={e => {
+                    e.preventDefault();
+                    onSubmit(handleLogin);
+                  }}
                 />
               </form>
               <a

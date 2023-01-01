@@ -1,8 +1,9 @@
 import axios, { AxiosRequestConfig, RawAxiosRequestHeaders } from 'axios';
 import { StorageProvider } from './storage.provider';
 import qs from 'qs';
-
-export type RequestConfig = AxiosRequestConfig;
+export interface RequestConfig extends AxiosRequestConfig {
+  responseHeader?: boolean;
+};
 
 export class NetworkProvider {
   /**
@@ -45,9 +46,10 @@ export class NetworkProvider {
     url: string,
     requestConfig: RequestConfig
   ): Promise<RequestResponse> {
+    const filterRequestConfig = requestConfig as AxiosRequestConfig;
     const resp = await axios(url, {
-      ...requestConfig,
-      baseURL: `${this.BASE_URL}/api`,
+      ...filterRequestConfig,
+      baseURL: `${this.BASE_URL}`,
       paramsSerializer: {
         serialize: (params: any) => {
           return qs.stringify(params, { arrayFormat: 'repeat' });
@@ -55,7 +57,7 @@ export class NetworkProvider {
       },
       headers: {
         ...this.defaultNetWorkOptions,
-        ...requestConfig.headers,
+        ...filterRequestConfig.headers,
       } as any,
     }).catch((e) => e.response);
 
@@ -63,11 +65,26 @@ export class NetworkProvider {
       throw new Error(`Error when request server, ${resp.statusText}`);
     }
 
-    let jsonData = resp.data;
+    let jsonData = requestConfig?.responseHeader === true ? resp : resp?.data;
     try {
-      jsonData = JSON.parse(resp.data);
+      if (requestConfig?.responseHeader === true) {
+        if (typeof resp.data === 'string') {
+          jsonData = {
+            data: JSON.parse(resp.data),
+            headers: JSON.parse(resp.headers)
+          };
+        } else {
+          jsonData = {
+            data: resp.data,
+            headers: resp.headers
+          };
+        };
+      } else {
+        jsonData = JSON.parse(resp.data);
+      }
     } catch {};
 
+    console.log("json data", jsonData);
     return jsonData as RequestResponse;
   }
 
@@ -83,13 +100,17 @@ export class NetworkProvider {
     requestConfig: RequestConfig
   ): Promise<RequestResponse> {
     const credential = this.storageProvider.getItem('hAccessToken');
-    if (!credential) {
-      return null;
+    const client = this.storageProvider.getItem("client");
+    const uid = this.storageProvider.getItem("uid");
+    if (!credential || !client || !uid) {
+      throw new Error("Error when request without credential");
     }
     const options = Object.assign({}, requestConfig);
     options.headers = {
       ...options.headers,
-      Authorization: `Bearer ${credential}`,
+      "access-token": credential,
+      client,
+      uid,
     } as any;
     return this.request<RequestResponse>(url, options);
   }
