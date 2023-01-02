@@ -8,11 +8,11 @@ interface TodoStats {
 }
 
 const todoStatsState = selector<TodoStats>({
-  key: 'todoStatsState',
+  key: `todoStatsState`,
   get: ({ get }) => {
     const todos = get(todoState)
     const totalNum = todos.length
-    const totalUncompletedNum = totalNum - todos.filter((item) => item.completed).length
+    const totalUncompletedNum = totalNum - todos.filter((item) => item.done).length
 
     return {
       totalNum,

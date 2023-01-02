@@ -6,8 +6,6 @@ import RightOverlayContent from '../components/auth/right-overlay-content'
 import Footer from '../components/Footer'
 import Toggle from '../components/Toggle'
 
-
-
 export default function LoginPage(): ReactElement {
   const [isAnimated, setIsAnimated] = useState(false)
   const overlayBg =

@@ -1,5 +1,6 @@
 import { combineReducers } from "redux";
 import userReducer from "./user";
+import todoTaskListReducer from "./todo";
 import State from "@/src/redux/entities/state";
 
 /**
@@ -7,6 +8,7 @@ import State from "@/src/redux/entities/state";
  */
 const reducer = combineReducers<State>({
   user: userReducer,
+  taskList: todoTaskListReducer,
 });
 
 /**
@@ -14,6 +16,7 @@ const reducer = combineReducers<State>({
  */
 export const initState: State = {
   user: null,
+  taskList: [],
 };
 
 export default reducer;

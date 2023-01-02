@@ -8,14 +8,15 @@ import {
   useCallback
 } from "react";
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import AppState from "@/src/redux/entities/state";
 import * as Actions from "@/src/redux/actions";
 
 const AUTH_ROUTE = [
   "/"
 ];
 
-export interface MainContextState {
+export interface MainContextState extends AppState {
   dispatch(t: any): void;
 };
 
@@ -24,6 +25,7 @@ export const MainContext = createContext<MainContextState>(null);
 export const MainProvider: FC<{ children: ReactNode }> = ({
   children
 }) => {
+  const appState = useSelector((appState: AppState) => appState);
   const dispatch = useDispatch();
   const router = useRouter();
   const [auth, setAuth] = useState(false);
@@ -33,7 +35,6 @@ export const MainProvider: FC<{ children: ReactNode }> = ({
    */
   const handleAuthenticate = useCallback(() => {
     dispatch(Actions.getTodoList((todoList) => {
-      console.log(todoList);
       if (todoList) {
         setAuth(true);
       }
@@ -60,7 +61,8 @@ export const MainProvider: FC<{ children: ReactNode }> = ({
 
   return (
     <MainContext.Provider value={{
-      dispatch
+      dispatch,
+      ...appState
     }}>
       {children}
     </MainContext.Provider>

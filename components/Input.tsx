@@ -1,17 +1,17 @@
 import React, { ReactElement, useCallback } from 'react'
 import { useTheme } from 'next-themes'
-
-import Todo from '../types/todo.type'
+import { useMain } from "@/src/hooks/useMain";
+import { TodoEntity } from "@/src/entities/todo.entity";
 import useIsMounted from './hooks/useIsMounted'
 
 interface Props {
-  todo: Todo
+  todo: TodoEntity
   onInputChange: (value: string) => void
   onCheckboxChange: (checked: boolean) => void
   onSubmit?: () => void
   onDelete?: () => void
-  rounded?: boolean
   readonly?: boolean
+  taskId: string;
 }
 
 const Input = ({
@@ -20,8 +20,8 @@ const Input = ({
   onCheckboxChange,
   onSubmit,
   onDelete,
-  rounded,
   readonly,
+  taskId,
 }: Props): ReactElement => {
   const { theme } = useTheme()
   const isMounted = useIsMounted()
@@ -33,15 +33,8 @@ const Input = ({
     onCheckboxChange(e.target.checked)
   }, [onCheckboxChange])
 
-  const handleInputClick = useCallback(() => {
-    if (!readonly) return
-
-    onCheckboxChange(!todo.completed)
-  }, [onCheckboxChange, readonly, todo])
-
   const handleSubmit = useCallback((e) => {
     e.preventDefault()
-
     if (onSubmit) {
       onSubmit()
     }
@@ -73,9 +66,10 @@ const Input = ({
             cursor-pointer
             transition
             ease-linear
+            !rounded-0
             ${theme === 'dark' ? 'form-checkbox-dark' : ''}
           `}
-            checked={todo.completed}
+            checked={todo.done}
             onChange={updateChecked}
           />
           <img
@@ -84,7 +78,7 @@ const Input = ({
             top-2
             left-1.5
             pointer-events-none
-            ${todo.completed ? '' : 'invisible' }
+            ${todo.done ? '' : 'invisible'}
           `}
             src="/images/icon-check.svg"
             alt="Checkbox image for checkbox input"
@@ -110,14 +104,11 @@ const Input = ({
           cursor-pointer
           transition
           ease-linear
-          ${rounded ? (todo.id ? 'rounded-t' : 'rounded') : ''}
-          ${todo.completed ? 'line-through text-light_lightGreyBlue dark:text-dark_darkGreyBlue' : 'text-light_veryDarkGreyBlue dark:text-dark_lightGreyBlue'}
+          ${todo.done ? 'line-through text-light_lightGreyBlue dark:text-dark_darkGreyBlue' : 'text-light_veryDarkGreyBlue dark:text-dark_lightGreyBlue'}
         `}
           placeholder="Create a new todo.."
-          value={todo.value}
+          value={todo.name}
           onChange={updateInput}
-          onClick={handleInputClick}
-          readOnly={readonly}
           maxLength={125}
           aria-label="Todo"
         />

@@ -1,41 +1,28 @@
 import Head from 'next/head'
-import { ReactElement, useState } from 'react'
+import { ReactElement, useState, useCallback } from 'react'
 import Footer from '../components/Footer'
 import Toggle from '../components/Toggle'
-import Input from '../components/Input'
-import List from '../components/List'
-import Todo from '../types/todo.type'
-import useTodos from '../components/hooks/useTodos'
+import { TaskContainer } from "@/components/task-container";
+import { useMain } from "@/src/hooks/useMain";
+import { createTodoList } from "@/src/redux/actions";
+import { RecoilRoot } from 'recoil';
+import { toast } from "react-toastify";
 
 export default function Home(): ReactElement {
-  const { addTodo } = useTodos()
-  const [todo, setTodo] = useState(new Todo({
-    value: '',
-    completed: false
-  }))
+  const { taskList, dispatch } = useMain();
+  const [todoName, setTodoName] = useState("");
 
-  const handleInputChange = (value: string) => {
-    setTodo({
-      ...todo,
-      value
-    })
-  }
-
-  const handleCheckboxChange = (completed: boolean) => {
-    setTodo({
-      ...todo,
-      completed
-    })
-  }
-
-  const handleSubmit = () => {
-    addTodo(todo)
-
-    setTodo(new Todo({
-      value: '',
-      completed: false
+  const onSubmit = useCallback((e) => {
+    e.preventDefault()
+    if (!todoName) return;
+    dispatch(createTodoList({
+      name: todoName,
+    }, (task) => {
+      if (!task) return;
+      toast("Create new task succesfully");
+      setTodoName("");
     }))
-  }
+  }, [todoName]);
 
   return (
     <div className="min-h-screen flex flex-col items-center">
@@ -53,15 +40,24 @@ export default function Home(): ReactElement {
             TODO
             <Toggle />
           </p>
-
-          <Input
-            todo={todo}
-            rounded
-            onInputChange={handleInputChange}
-            onCheckboxChange={handleCheckboxChange}
-            onSubmit={handleSubmit}
-          />
-          <List />
+          <div className='relative group'>
+            <form onSubmit={onSubmit}>
+              <input
+                type="text"
+                className={`text-sm sm:text-base overflow-ellipsis w-full focus:outline-none py-4 sm:py-4.5 pr-8 pl-14 sm:pl-16 dark:bg-dark_veryDarkDesaturatedBlue cursor-pointer transition ease-linear} 'text-light_veryDarkGreyBlue dark:text-dark_lightGreyBlue',`}
+                placeholder="Create a new task"
+                value={todoName}
+                onChange={(e) => setTodoName(e.target.value)}
+                maxLength={125}
+                aria-label="Todo"
+              />
+            </form>
+          </div>
+          {taskList.map((item, index) => (
+            <RecoilRoot key={`task-container-${index}`}>
+              <TaskContainer task={item} />
+            </RecoilRoot>
+          ))}
         </div>
       </div>
       <Footer />

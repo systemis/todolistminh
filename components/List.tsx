@@ -1,5 +1,6 @@
-import React, { ReactElement, ReactNode, useCallback } from 'react'
-import { useRecoilValue } from 'recoil'
+import React, { ReactNode, useCallback, useEffect, FC } from 'react'
+import { useMain } from "@/src/hooks/useMain";
+import { useRecoilValue, useRecoilState } from 'recoil'
 import {
   SortableContainer as SortableContainerWrap,
   SortableElement,
@@ -7,13 +8,13 @@ import {
   SortEventWithTag
 } from 'react-sortable-hoc'
 import { AnimatePresence, motion } from 'framer-motion'
-
+import { TodoEntity, TodoTaskEntity } from "@/src/entities/todo.entity";
 import Input from './Input'
 import ListFilter from './ListFilter'
 import ItemsLeft from './ItemsLeft'
 import filteredTodoState from '../recoil/selectors/todo-filter'
+import todoState from '../recoil/atoms/todo'
 import useTodos from './hooks/useTodos'
-import Todo from '../types/todo.type'
 import useIsMounted from './hooks/useIsMounted'
 
 const container = {
@@ -39,8 +40,10 @@ const item = {
 }
 
 interface SortableItemProps {
-  todo: Todo
-  idx: number
+  todo: TodoEntity
+  idx: number;
+  id: string;
+  taskId: string;
   deleteTodo: (idx: number) => void
   updateTodoCompleted: (idx: number, completed: boolean) => void
   updateTodoValue: (idx: number, value: string) => void
@@ -49,6 +52,8 @@ interface SortableItemProps {
 const SortableItem = SortableElement<SortableItemProps>(({
   todo,
   idx,
+  id,
+  taskId,
   updateTodoCompleted,
   updateTodoValue,
   deleteTodo
@@ -65,8 +70,8 @@ const SortableItem = SortableElement<SortableItemProps>(({
         todo={todo}
         onInputChange={(value: string) => updateTodoValue(idx, value)}
         onCheckboxChange={(completed: boolean) => updateTodoCompleted(idx, completed)}
-        onDelete={() => deleteTodo(idx)}
-        rounded={idx === 0}
+        onDelete={() => deleteTodo(parseInt(id))}
+        taskId={taskId}
         readonly
       />
     </motion.div>
@@ -81,15 +86,18 @@ const SortableContainer = SortableContainerWrap<SortableContainerProps>(({ child
   return <div className="cursor-pointer">{children}</div>
 })
 
-const List = (): ReactElement | null => {
+const List:FC<{ taskId: string }> = ({ taskId }) => {
+  const { taskList: userTaskList } = useMain();
   const todos = useRecoilValue(filteredTodoState)
+  const [_, setTaskList] = useRecoilState(todoState);
+
   const {
     clearCompletedTodos,
     deleteTodo,
     updateTodoCompleted,
     updateTodoValue,
     reorderTodo
-  } = useTodos()
+  } = useTodos(taskId)
   const isMounted = useIsMounted()
 
   const onSortEnd = useCallback(({ oldIndex, newIndex }: { oldIndex: number, newIndex: number }) => {
@@ -100,10 +108,14 @@ const List = (): ReactElement | null => {
     return 'tagName' in target && target.tagName?.toLowerCase() === 'img'
   }, [])
 
+  useEffect(() => {
+    setTaskList((userTaskList.find(item => item.id.toString() === taskId))?.todos || []);
+  }, [userTaskList, taskId]);
+
   if (!isMounted) return null
 
   return (
-    <div className="mt-5 sm:mt-7">
+    <div className="mt-[0] sm:mt-[0]">
       <div className="rounded">
         <div className="rounded">
           {/** @ts-ignore */}
@@ -117,9 +129,11 @@ const List = (): ReactElement | null => {
                     index={idx}
                     todo={todo}
                     idx={idx}
-                    updateTodoValue={updateTodoValue}
-                    updateTodoCompleted={updateTodoCompleted}
+                    id={todo.id}
+                    updateTodoValue={(idx, value) => updateTodoValue(todo.id, idx, value)}
+                    updateTodoCompleted={(idx, value) => updateTodoCompleted(todo.id, idx, value)}
                     deleteTodo={deleteTodo}
+                    taskId={taskId}
                   />
                 })}
               </AnimatePresence>
@@ -132,7 +146,7 @@ const List = (): ReactElement | null => {
             transition={{ delay: 0.5, duration: 0.5 }}
           >
             <div className="flex flex-1">
-              <ItemsLeft />
+              <ItemsLeft taskId={taskId} />
             </div>
             <div className="hidden sm:flex">
               <ListFilter />
@@ -141,9 +155,7 @@ const List = (): ReactElement | null => {
               <div onClick={clearCompletedTodos}>Clear Completed</div>
             </div>
           </motion.div>
-
         </div>
-
         <motion.div
           className="rounded sm:hidden mt-4 bg-white dark:bg-dark_veryDarkDesaturatedBlue px-6 py-3.5"
           initial={{ opacity: 0 }}
@@ -153,15 +165,6 @@ const List = (): ReactElement | null => {
           <ListFilter />
         </motion.div>
       </div>
-
-      <motion.div
-        className="mt-10 text-sm text-center text-light_darkGreyBlue dark:text-dark_veryDarkGreyBlue"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-      >
-        Drag and drop to reorder list
-      </motion.div>
     </div>
   )
 }

@@ -1,9 +1,9 @@
-import { ReactElement } from 'react'
+import { FC } from 'react'
 import { useRecoilValue } from 'recoil'
 
 import todoStatsState from '../recoil/selectors/todo-stats'
 
-const ItemsLeft = (): ReactElement => {
+const ItemsLeft: FC<{ taskId: string }> = ({ taskId }) => {
   const { totalUncompletedNum } = useRecoilValue(todoStatsState)
 
   return (

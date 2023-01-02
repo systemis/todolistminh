@@ -1,5 +1,23 @@
 import { CallBackSaga } from "@/src/redux/entities";
-import { GET_TODO_LIST } from "@/src/redux/actions";
+import { TodoTaskEntity } from "@/src/entities/todo.entity";
+import {
+  CreateTaskDto,
+  CreateTodoDto,
+  DeleteTodoDto,
+  DeleteTaskTodoDto,
+  EditTodoDto,
+  EditTaskDto,
+} from "@/src/dto";
+import {
+  GET_TASK_TODO_LIST,
+  SET_TASK_TODO_LIST,
+  CREATE_TASK_TODO_LIST,
+  CREATE_TODO,
+  DELETE_TODO,
+  DELETE_TASK_TODO_LIST,
+  UPDATE_TASK_TODO_LIST,
+  EDIT_TODO
+} from "@/src/redux/actions";
 
 /**
  * @param callback
@@ -8,8 +26,109 @@ import { GET_TODO_LIST } from "@/src/redux/actions";
  * Get todo list by user
  */
 export const getTodoList = (
-  callback: CallBackSaga<unknown>
+  callback?: CallBackSaga<unknown>
 ) => ({
-  type: GET_TODO_LIST,
+  type: GET_TASK_TODO_LIST,
   callback,
 });
+
+/**
+ * @param callback
+ * @returns
+ * @description
+ * Get todo list by user
+ */
+export const createTodoList = (
+  payload: CreateTaskDto,
+  callback?: CallBackSaga<unknown>
+) => ({
+  type: CREATE_TASK_TODO_LIST,
+  payload,
+  callback,
+});
+
+/**
+ * @param callback
+ * @returns
+ * @description
+ * Get todo list by user
+ */
+export const editTask = (
+  payload: EditTaskDto,
+  callback?: CallBackSaga<unknown>
+) => ({
+  type: UPDATE_TASK_TODO_LIST,
+  payload,
+  callback,
+});
+
+/**
+ * @param callback
+ * @returns
+ * @description
+ * Get todo list by user
+ */
+export const deleteTask = (
+  payload: DeleteTaskTodoDto,
+  callback?: CallBackSaga<unknown>
+) => ({
+  type: DELETE_TASK_TODO_LIST,
+  payload,
+  callback,
+});
+
+/**
+ * @param callback
+ * @returns
+ * @description
+ * Get todo list by user
+ */
+export const createTodo = (
+  payload: CreateTodoDto,
+  callback?: CallBackSaga<unknown>
+) => ({
+  type: CREATE_TODO,
+  payload,
+  callback,
+});
+
+/**
+ * @param callback
+ * @returns
+ * @description
+ * Get todo list by user
+ */
+export const editTodo = (
+  payload: EditTodoDto,
+  callback?: CallBackSaga<unknown>
+) => ({
+  type: EDIT_TODO,
+  payload,
+  callback,
+});
+
+/**
+ * @param callback
+ * @returns
+ * @description
+ * Get todo list by user
+ */
+export const deleteTodo = (
+  payload: DeleteTodoDto,
+  callback?: CallBackSaga<unknown>
+) => ({
+  type: DELETE_TODO,
+  payload,
+  callback,
+});
+
+
+/**
+ * @returns
+ * @dev
+ * Set todo list
+ */
+export const setTodoList = (payload: TodoTaskEntity[]) => ({
+  type: SET_TASK_TODO_LIST,
+  payload,
+})

@@ -86,7 +86,6 @@ export class NetworkProvider {
       }
     } catch {};
 
-    console.log("json data", jsonData);
     return jsonData as RequestResponse;
   }
 
