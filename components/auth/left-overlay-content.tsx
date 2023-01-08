@@ -6,7 +6,7 @@ const LeftOverlayContent: FC<{
 }> = ({ isAnimated, setIsAnimated }) => {
   return (
     <div className="p-8 text-center">
-      <h1 className="text-[12px] md:text-6xl font-bold text-white mb-4">
+      <h1 className="text-[12px] md:text-5xl font-bold text-white mb-4">
         Already have an account ?
       </h1>
 

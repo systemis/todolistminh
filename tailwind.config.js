@@ -46,7 +46,8 @@ module.exports = {
         dark_darkGreyBlue: 'hsl(234, 11%, 52%)',
         dark_veryDarkGreyBlue: 'hsl(233, 14%, 35%)',
         dark_veryDarkGreyBlue2: 'hsl(237, 14%, 26%)',
-        brightBlue: 'hsl(220, 98%, 61%)'
+        brightBlue: 'hsl(220, 98%, 61%)',
+        gray: "#d9d9d9",
       },
       padding: {
         '4.5': '1.125rem',

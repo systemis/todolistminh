@@ -1,13 +1,18 @@
 import React, { ReactElement } from 'react'
 import { ThemeProvider } from 'next-themes'
-
+import { useTheme } from 'next-themes'
 import usePreloadBgImages from './hooks/usePreloadBgImages'
+import { ConfigProvider, theme } from 'antd';
 
-const Layout = ({ children }: { children: ReactElement }): ReactElement => {
-  usePreloadBgImages()
+
+const DLayout = ({ children }: { children: ReactElement }): ReactElement => {
+  const { defaultAlgorithm, darkAlgorithm } = theme;
+  const { theme: nextTheme } = useTheme();
 
   return (
-    <ThemeProvider attribute="class">
+    <ConfigProvider theme={{
+      algorithm: nextTheme === "dark" ? darkAlgorithm : defaultAlgorithm,
+    }}>
       <div className={`
         transition-all
         ease-linear
@@ -25,6 +30,18 @@ const Layout = ({ children }: { children: ReactElement }): ReactElement => {
       `}>
         <main>{children}</main>
       </div>
+    </ConfigProvider>
+  )
+}
+
+const Layout = ({ children }: { children: ReactElement }): ReactElement => {
+  usePreloadBgImages()
+
+  return (
+    <ThemeProvider attribute="class">
+      <DLayout>
+        {children}
+      </DLayout>
     </ThemeProvider>
   )
 }

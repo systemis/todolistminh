@@ -18,6 +18,7 @@ const AUTH_ROUTE = [
 
 export interface MainContextState extends AppState {
   dispatch(t: any): void;
+  logout(e: any): Promise<void>;
 };
 
 export const MainContext = createContext<MainContextState>(null);
@@ -41,6 +42,16 @@ export const MainProvider: FC<{ children: ReactNode }> = ({
     }))
   }, [router.asPath]);
 
+  const handleLogout = useCallback(async (e) => {
+    e?.preventDefault();
+    window?.localStorage.removeItem('TODOLISTAPP_hAccessToken');
+    window?.localStorage.removeItem("TODOLISTAPP_client");
+    window?.localStorage.removeItem("TODOLISTAPP_uid");
+    setAuth(false);
+    router.push("/auth");
+  }, [auth]);
+
+
   /**
    * @dev Process authentication whenever the router path changed.
    */
@@ -62,6 +73,7 @@ export const MainProvider: FC<{ children: ReactNode }> = ({
   return (
     <MainContext.Provider value={{
       dispatch,
+      logout: handleLogout,
       ...appState
     }}>
       {children}

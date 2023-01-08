@@ -1,5 +1,6 @@
 import Head from 'next/head'
-import { ReactElement, useState, useCallback, useRef } from 'react'
+import { useRouter } from "next/router";
+import { ReactElement, useState, useCallback } from 'react'
 import Footer from '../components/Footer'
 import Toggle from '../components/Toggle'
 import { TaskContainer } from "@/components/task-container";
@@ -10,11 +11,11 @@ import { toast } from "react-toastify";
 import { Tabs } from 'antd';
 
 export default function Home(): ReactElement {
-  const { taskList, taskListShared, dispatch } = useMain();
+  const { taskList, taskListShared, dispatch, logout: handleLogout } = useMain();
   const [todoName, setTodoName] = useState("");
   const [todoNameShared, setTodoNameShred] = useState("");
 
-  console.log(taskListShared);
+  const router = useRouter();
 
   const onSubmit = useCallback((e) => {
     e.preventDefault()
@@ -27,18 +28,6 @@ export default function Home(): ReactElement {
       setTodoName("");
     }))
   }, [todoName]);
-  
-  const onSubmitShared = useCallback((e) => {
-    e.preventDefault()
-    if (!todoNameShared) return;
-    dispatch(createTodoListShared({
-      name: todoNameShared,
-    }, (task) => {
-      if (!task) return;
-      toast("Create new task succesfully");
-      setTodoNameShred("");
-    }))
-  }, [todoNameShared]);
 
   return (
     <div className="min-h-screen flex flex-col items-center">
@@ -52,9 +41,10 @@ export default function Home(): ReactElement {
 
       <div className="flex-1 lg:w-2/3 xl:w-2/5 w-full px-7">
 
-        <p className="text-3xl lg:text-4xl text-white font-bold tracking-widest pt-10 sm:pt-16 lg:pt-24 lg:pt-20 pb-6 lg:pb-10">
+        <p className="text-3xl lg:text-4xl text-white font-bold tracking-widest pt-10 sm:pt-16 lg:pt-24 lg:pt-20 pb-6 lg:pb-10 items-center">
           TODO
           <Toggle />
+          <p className='float-right text-[10px] tracking-[2px] mr-[20px] cursor-pointer relative top-[-5px]' onClick={handleLogout}>Logout</p>
         </p>
         <Tabs
           defaultActiveKey="1"

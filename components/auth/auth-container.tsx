@@ -13,7 +13,7 @@ const LoginPage = () => {
     <div className="h-4/5 w-4/5 bg-white relative overflow-hidden rounded-lg">
       <div
         id="signin"
-        className={`bg-white absolute top-0 left-0 h-full w-1/2 flex justify-center items-center transition-all duration-700 ease-in-out z-20 ${
+        className={`dark:bg-dark_veryDarkBlue bg-white absolute top-0 left-0 h-full w-1/2 flex justify-center items-center transition-all duration-700 ease-in-out z-20 ${
           isAnimated ? 'translate-x-full opacity-0' : ''
         }`}
       >
