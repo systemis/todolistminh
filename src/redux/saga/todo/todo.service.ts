@@ -6,13 +6,30 @@ import {
   DeleteTodoDto,
   DeleteTaskTodoDto,
   EditTodoDto,
-  EditTaskDto
+  EditTaskDto,
+  ShareTaskDto,
 } from "@/src/dto";
 
 export class TodoService {
   async getTodoList(): Promise<TodoTaskEntity[]> {
     const taskList = await networkProvider.requestWithCredentials<TodoTaskEntity[]>(
       '/task_lists', {
+      method: "GET"
+    });
+
+    return await Promise.all(taskList.map(async (item) => {
+      return {
+        ...item,
+        todos: await networkProvider.requestWithCredentials<TodoEntity[]>(
+          `/task_lists/${item.id}/todos`, {
+          method: 'GET',
+        }),
+      }
+    }))
+  }
+  async getTodoListShared(): Promise<TodoTaskEntity[]> {
+    const taskList = await networkProvider.requestWithCredentials<TodoTaskEntity[]>(
+      '/shared', {
       method: "GET"
     });
 
@@ -36,11 +53,29 @@ export class TodoService {
     );
   }
   
+  async newTaskShared(createTaskDto: CreateTaskDto): Promise<TodoTaskEntity[]> {
+    return networkProvider.requestWithCredentials<TodoTaskEntity[]>(
+      '/task_lists', {
+      method: "POST",
+      data: createTaskDto,
+    }
+    );
+  }
+  
   async editTask(editTaskDto: EditTaskDto): Promise<TodoTaskEntity[]> {
     return networkProvider.requestWithCredentials<TodoTaskEntity[]>(
       `/task_lists/${editTaskDto.taskId}`, {
       method: "PATCH",
       data: editTaskDto as Omit<EditTaskDto, "taskId">,
+    }
+    );
+  }
+  
+  async shareTask(shareTaskDto: ShareTaskDto): Promise<TodoTaskEntity[]> {
+    return networkProvider.requestWithCredentials<TodoTaskEntity[]>(
+      `/task_lists/${shareTaskDto.taskId}/share`, {
+      method: "POST",
+      data: shareTaskDto,
     }
     );
   }

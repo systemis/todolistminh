@@ -18,6 +18,13 @@ export class UserService {
       data: registerDto,
     });
   }
+  
+  async getUsers(): Promise<unknown> {
+    return networkProvider.requestWithCredentials<unknown>(
+      '/users', {
+      method: 'GET'
+    });
+  }
 }
 
 export const userService = new UserService();

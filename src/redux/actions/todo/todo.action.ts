@@ -7,16 +7,20 @@ import {
   DeleteTaskTodoDto,
   EditTodoDto,
   EditTaskDto,
+  ShareTaskDto
 } from "@/src/dto";
 import {
   GET_TASK_TODO_LIST,
   SET_TASK_TODO_LIST,
   CREATE_TASK_TODO_LIST,
+  CREATE_TASK_TODO_LIST_SHARED,
   CREATE_TODO,
   DELETE_TODO,
   DELETE_TASK_TODO_LIST,
   UPDATE_TASK_TODO_LIST,
-  EDIT_TODO
+  EDIT_TODO,
+  SHARE_TASK,
+  SET_TASK_TODO_LIST_SHARED
 } from "@/src/redux/actions";
 
 /**
@@ -53,11 +57,41 @@ export const createTodoList = (
  * @description
  * Get todo list by user
  */
+export const createTodoListShared = (
+  payload: CreateTaskDto,
+  callback?: CallBackSaga<unknown>
+) => ({
+  type: CREATE_TASK_TODO_LIST_SHARED,
+  payload,
+  callback,
+});
+
+/**
+ * @param callback
+ * @returns
+ * @description
+ * Get todo list by user
+ */
 export const editTask = (
   payload: EditTaskDto,
   callback?: CallBackSaga<unknown>
 ) => ({
   type: UPDATE_TASK_TODO_LIST,
+  payload,
+  callback,
+});
+
+/**
+ * @param callback
+ * @returns
+ * @description
+ * Get todo list by user
+ */
+export const shareTask = (
+  payload: ShareTaskDto,
+  callback?: CallBackSaga<unknown>
+) => ({
+  type: SHARE_TASK,
   payload,
   callback,
 });
@@ -130,5 +164,15 @@ export const deleteTodo = (
  */
 export const setTodoList = (payload: TodoTaskEntity[]) => ({
   type: SET_TASK_TODO_LIST,
+  payload,
+})
+
+/**
+ * @returns
+ * @dev
+ * Set todo list
+ */
+export const setTodoListShared = (payload: TodoTaskEntity[]) => ({
+  type: SET_TASK_TODO_LIST_SHARED,
   payload,
 })

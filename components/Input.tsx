@@ -10,6 +10,7 @@ interface Props {
   onCheckboxChange: (checked: boolean) => void
   onSubmit?: () => void
   onDelete?: () => void
+  onShare?: () => void
   readonly?: boolean
   taskId: string;
 }
@@ -20,6 +21,7 @@ const Input = ({
   onCheckboxChange,
   onSubmit,
   onDelete,
+  onShare,
   readonly,
   taskId,
 }: Props): ReactElement => {
@@ -113,7 +115,6 @@ const Input = ({
           aria-label="Todo"
         />
       </form>
-
       <a id={`delete-${todo.id}`} className="absolute top-0 right-0" onClick={onDelete}>
         <img
           src="/images/icon-cross.svg"

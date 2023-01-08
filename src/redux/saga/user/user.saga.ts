@@ -1,8 +1,9 @@
-import { call } from 'redux-saga/effects';
+import { call, put } from 'redux-saga/effects';
 import { SagaPayload } from '@/src/redux/entities';
 import { LoginDto, RegisterDto } from "@/src/dto";
 import { storageProvider } from "@/src/providers/storage.provider";
 import { userService } from "./user.service";
+import { setUser } from "@/src/redux/actions";
 
 /**
  * @param payload
@@ -39,6 +40,24 @@ export function* register({
   try {
     const registerResponse: unknown = yield call(userService.register, payload);
     callback && callback(registerResponse);
+  } catch (err) {
+    callback && callback(null);
+  }
+}
+
+/**
+ * @param payload
+ * @param callback
+ * @description
+ * Register
+ */
+export function* getUsers({
+  callback,
+}: SagaPayload<unknown, unknown>) {
+  try {
+    const users: unknown = yield call(userService.getUsers);
+    yield put(setUser(users))
+    callback && callback(users);
   } catch (err) {
     callback && callback(null);
   }

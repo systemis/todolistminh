@@ -10,6 +10,12 @@ export class EditTaskDto extends CreateTaskDto {
   taskId: string;
 }
 
+export class ShareTaskDto {
+  user_id: string;
+  taskId: string;
+  is_write?: boolean;
+}
+
 export class CreateTodoDto {
   @IsString()
   name?: string;

@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback, useEffect, FC } from 'react'
+import React, { ReactNode, useCallback, useEffect, FC, useState } from 'react'
 import { useMain } from "@/src/hooks/useMain";
 import { useRecoilValue, useRecoilState } from 'recoil'
 import {
@@ -45,6 +45,7 @@ interface SortableItemProps {
   id: string;
   taskId: string;
   deleteTodo: (idx: number) => void
+  shareTodo: (idx: number) => void
   updateTodoCompleted: (idx: number, completed: boolean) => void
   updateTodoValue: (idx: number, value: string) => void
 }
@@ -56,7 +57,8 @@ const SortableItem = SortableElement<SortableItemProps>(({
   taskId,
   updateTodoCompleted,
   updateTodoValue,
-  deleteTodo
+  deleteTodo,
+  shareTodo
 }: SortableItemProps) => {
   return (
     <motion.div
@@ -71,6 +73,7 @@ const SortableItem = SortableElement<SortableItemProps>(({
         onInputChange={(value: string) => updateTodoValue(idx, value)}
         onCheckboxChange={(completed: boolean) => updateTodoCompleted(idx, completed)}
         onDelete={() => deleteTodo(parseInt(id))}
+        onShare={() => shareTodo(parseInt(id))}
         taskId={taskId}
         readonly
       />
@@ -86,8 +89,8 @@ const SortableContainer = SortableContainerWrap<SortableContainerProps>(({ child
   return <div className="cursor-pointer">{children}</div>
 })
 
-const List:FC<{ taskId: string }> = ({ taskId }) => {
-  const { taskList: userTaskList } = useMain();
+const List: FC<{ taskId: string, shared?: boolean }> = ({ taskId, shared }) => {
+  const { taskList: userTaskList, taskListShared } = useMain();
   const todos = useRecoilValue(filteredTodoState)
   const [_, setTaskList] = useRecoilState(todoState);
 
@@ -109,8 +112,8 @@ const List:FC<{ taskId: string }> = ({ taskId }) => {
   }, [])
 
   useEffect(() => {
-    setTaskList((userTaskList.find(item => item.id.toString() === taskId))?.todos || []);
-  }, [userTaskList, taskId]);
+    setTaskList(((shared ? taskListShared : userTaskList).find(item => item.id.toString() === taskId))?.todos || []);
+  }, [userTaskList, taskId, taskListShared]);
 
   if (!isMounted) return null
 
@@ -123,7 +126,7 @@ const List:FC<{ taskId: string }> = ({ taskId }) => {
             <motion.div variants={container} initial="hidden" animate="visible">
               <AnimatePresence>
                 {todos.map((todo, idx) => {
-                  {/** @ts-ignore */}
+                  {/** @ts-ignore */ }
                   return <SortableItem
                     key={`item-${todo?.id}`}
                     index={idx}
