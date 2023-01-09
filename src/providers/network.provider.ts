@@ -12,7 +12,7 @@ export class NetworkProvider {
    * @dev
    * Base api url located in evn file
    */
-  private BASE_URL = "http://dev.thanqminh.com:3000";
+  private BASE_URL = "https://dev.thanqminh.com:3001";
 
   /**
    * Default network options

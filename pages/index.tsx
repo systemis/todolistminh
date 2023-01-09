@@ -1,11 +1,10 @@
 import Head from 'next/head'
-import { useRouter } from "next/router";
 import { ReactElement, useState, useCallback } from 'react'
 import Footer from '../components/Footer'
 import Toggle from '../components/Toggle'
 import { TaskContainer } from "@/components/task-container";
 import { useMain } from "@/src/hooks/useMain";
-import { createTodoList, createTodoListShared } from "@/src/redux/actions";
+import { createTodoList } from "@/src/redux/actions";
 import { RecoilRoot } from 'recoil';
 import { toast } from "react-toastify";
 import { Tabs } from 'antd';
@@ -13,9 +12,6 @@ import { Tabs } from 'antd';
 export default function Home(): ReactElement {
   const { taskList, taskListShared, dispatch, logout: handleLogout } = useMain();
   const [todoName, setTodoName] = useState("");
-  const [todoNameShared, setTodoNameShred] = useState("");
-
-  const router = useRouter();
 
   const onSubmit = useCallback((e) => {
     e.preventDefault()
