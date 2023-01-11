@@ -82,7 +82,7 @@ const Input = ({
             pointer-events-none
             ${todo.done ? '' : 'invisible'}
           `}
-            src="/images/icon-check.svg"
+            src="https://todoappt.netlify.app/images/icon-check.svg"
             alt="Checkbox image for checkbox input"
           />
         </div>
@@ -117,7 +117,7 @@ const Input = ({
       </form>
       <a id={`delete-${todo.id}`} className="absolute top-0 right-0" onClick={onDelete}>
         <img
-          src="/images/icon-cross.svg"
+          src="https://todoappt.netlify.app/images/icon-cross.svg"
           className={`
           cursor-pointer
           sm:w-14.5

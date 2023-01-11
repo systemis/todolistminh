@@ -21,6 +21,7 @@ export const CREATE_TODO = "CREATE_TODO";
 export const DELETE_TODO = "DELETE_TODO";
 export const EDIT_TODO= "EDIT_TODO";
 export const SHARE_TASK= "SHARE_TASK";
+export const GET_SHARED_TASK = "GET_SHARED_TASK";
 
 /**
  * Export actions.

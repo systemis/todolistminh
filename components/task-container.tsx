@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, useCallback } from "react";
 import { TodoTaskEntity } from "@/src/entities/todo.entity";
 import { useMain } from "@/src/hooks/useMain";
 import { deleteTask, editTask, getUsers, shareTask } from "@/src/redux/actions";
@@ -7,6 +7,7 @@ import List from '../components/List'
 import useTodos from '../components/hooks/useTodos'
 import { toast } from "react-toastify";
 import { Avatar, List as AntdList, Skeleton, Modal } from 'antd';
+import { getSharedTask } from "@/src/redux/actions";
 
 const smapleData = "dsai@gmail.com";
 
@@ -58,6 +59,12 @@ export const TaskContainer: FC<{ task: TodoTaskEntity, shared?: boolean }> = ({ 
     setSharedTodo("");
   }
 
+  const handleGetSharedTask = useCallback(async () => {
+    try {
+      // dispatch(getSharedTask({ taskId: task.id.toString() }))
+    } catch {}
+  }, [task.id])
+
   useEffect(() => {
     dispatch(getUsers());
   }, []);
@@ -80,7 +87,7 @@ export const TaskContainer: FC<{ task: TodoTaskEntity, shared?: boolean }> = ({ 
               setSharedTodo(task.id.toString());
             }}>
               <img
-                src="/images/icons8-connect.svg"
+                src="https://todoappt.netlify.app/images/icons8-connect.svg"
                 className={`
             cursor-pointer
             sm:w-14.5
@@ -133,7 +140,6 @@ export const TaskContainer: FC<{ task: TodoTaskEntity, shared?: boolean }> = ({ 
         taskId={task?.id?.toString()}
       />
       <List shared={shared} taskId={task?.id?.toString()} />
-
       <Modal
         open={sharedTodo !== ""}
         onCancel={() => setSharedTodo("")}

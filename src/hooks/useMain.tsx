@@ -48,7 +48,7 @@ export const MainProvider: FC<{ children: ReactNode }> = ({
     window?.localStorage.removeItem("TODOLISTAPP_client");
     window?.localStorage.removeItem("TODOLISTAPP_uid");
     setAuth(false);
-    router.push("/auth");
+    router.push('/auth');
   }, [auth]);
 
 
@@ -62,11 +62,11 @@ export const MainProvider: FC<{ children: ReactNode }> = ({
    */
   useEffect(() => {
     if (!auth && AUTH_ROUTE.filter(item => item === router.asPath).length) {
-      router.push("/auth");
+      router.push(`/auth`);
     }
 
     if (auth && !(AUTH_ROUTE.filter(item => item === router.asPath).length)) {
-      router.push("/");
+      router.push(`/`);
     }
   }, [auth, router.asPath]);
 

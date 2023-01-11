@@ -116,6 +116,24 @@ export function* shareTask({
   } 
 }
 
+/**
+ * @param payload
+ * @param callback
+ * @dev
+ * Create new task
+ */
+export function* getSharedTask({
+  payload,
+  callback,
+}: SagaPayload<{ taskId: string }, any>) {
+  try {
+    // const getTodoListResponse = yield call(todoService.getSharedTask, payload?.taskId);
+    // callback && callback(getTodoListResponse);
+  } catch (err) {
+    callback && callback(null);
+  } 
+}
+
 
 /**
  * @param payload

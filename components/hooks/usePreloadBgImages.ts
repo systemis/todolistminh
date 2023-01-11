@@ -7,12 +7,12 @@ const usePreloadBgImages = (): void => {
 
   useEffect(() => {
     [
-      '/images/bg-desktop-dark.jpg',
-      '/images/bg-desktop-light.jpg',
-      '/images/bg-mobile-dark.jpg',
-      '/images/bg-mobile-light.jpg',
-      '/images/icon-moon.svg',
-      '/images/icon-sun.svg'
+      'https://todoappt.netlify.app/images/bg-desktop-dark.jpg',
+      'https://todoappt.netlify.app/images/bg-desktop-light.jpg',
+      'https://todoappt.netlify.app/images/bg-mobile-dark.jpg',
+      'https://todoappt.netlify.app/images/bg-mobile-light.jpg',
+      'https://todoappt.netlify.app/images/icon-moon.svg',
+      'https://todoappt.netlify.app/images/icon-sun.svg'
     ].forEach((image) => {
       if (!isMounted) return
 

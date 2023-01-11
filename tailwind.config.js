@@ -22,8 +22,8 @@ module.exports = {
         },
       },
       backgroundImage: theme => ({
-        'light-background': 'url(\'/images/bg-desktop-light.jpg\')',
-        'dark-background': 'url(\'/images/bg-desktop-dark.jpg\')',
+        'light-background': 'url(\'https://todoappt.netlify.app/images/bg-desktop-light.jpg\')',
+        'dark-background': 'url(\'https://todoappt.netlify.app/images/bg-desktop-dark.jpg\')',
         'mobile-light-background': 'url(\'/images/bg-mobile-light.jpg\')',
         'mobile-dark-background': 'url(\'/images/bg-mobile-dark.jpg\')'
       }),

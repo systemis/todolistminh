@@ -20,7 +20,8 @@ import {
   UPDATE_TASK_TODO_LIST,
   EDIT_TODO,
   SHARE_TASK,
-  SET_TASK_TODO_LIST_SHARED
+  SET_TASK_TODO_LIST_SHARED,
+  GET_SHARED_TASK,
 } from "@/src/redux/actions";
 
 /**
@@ -92,6 +93,21 @@ export const shareTask = (
   callback?: CallBackSaga<unknown>
 ) => ({
   type: SHARE_TASK,
+  payload,
+  callback,
+});
+
+/**
+ * @param callback
+ * @returns
+ * @description
+ * Get todo list by user
+ */
+export const getSharedTask = (
+  payload: { taskId: string },
+  callback?: CallBackSaga<unknown>
+) => ({
+  type: GET_SHARED_TASK,
   payload,
   callback,
 });

@@ -52,7 +52,7 @@ export class TodoService {
     }
     );
   }
-  
+
   async newTaskShared(createTaskDto: CreateTaskDto): Promise<TodoTaskEntity[]> {
     return networkProvider.requestWithCredentials<TodoTaskEntity[]>(
       '/task_lists', {
@@ -61,7 +61,7 @@ export class TodoService {
     }
     );
   }
-  
+
   async editTask(editTaskDto: EditTaskDto): Promise<TodoTaskEntity[]> {
     return networkProvider.requestWithCredentials<TodoTaskEntity[]>(
       `/task_lists/${editTaskDto.taskId}`, {
@@ -70,7 +70,7 @@ export class TodoService {
     }
     );
   }
-  
+
   async shareTask(shareTaskDto: ShareTaskDto): Promise<TodoTaskEntity[]> {
     return networkProvider.requestWithCredentials<TodoTaskEntity[]>(
       `/task_lists/${shareTaskDto.taskId}/share`, {
@@ -78,6 +78,13 @@ export class TodoService {
       data: shareTaskDto,
     }
     );
+  }
+
+  async getSharedTask(taskId: string): Promise<unknown> {
+    return networkProvider.requestWithCredentials<unknown>(
+      `/task_lists/${taskId}/share`, {
+      method: "GET",
+    });
   }
 
   async deleteTask(deleteTaskDto: DeleteTaskTodoDto): Promise<unknown> {
@@ -96,7 +103,7 @@ export class TodoService {
     }
     );
   }
-  
+
   async editTodo(editTodoDto: EditTodoDto): Promise<TodoEntity> {
     return networkProvider.requestWithCredentials<TodoEntity>(
       `/task_lists/${editTodoDto.taskId}/todos/${editTodoDto.todoId}`, {
