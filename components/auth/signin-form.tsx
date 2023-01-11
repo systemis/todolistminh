@@ -29,7 +29,7 @@ const SigninForm: FC = () => {
       toast("Login account successfully!");
       register("email", "");
       register("password", "");
-      router.push(`${location.pathname}/`);
+      router.push(`/`);
     }));
   }
 

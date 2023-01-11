@@ -48,7 +48,7 @@ export const MainProvider: FC<{ children: ReactNode }> = ({
     window?.localStorage.removeItem("TODOLISTAPP_client");
     window?.localStorage.removeItem("TODOLISTAPP_uid");
     setAuth(false);
-    router.push('/auth');
+    router.push('/');
   }, [auth]);
 
 
