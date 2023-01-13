@@ -1,5 +1,5 @@
 import { networkProvider } from '@/src/providers/network.provider';
-import { TodoTaskEntity, TodoEntity } from "@/src/entities/todo.entity";
+import { TodoTaskEntity, TodoEntity, SharedTaskUser } from "@/src/entities/todo.entity";
 import {
   CreateTaskDto,
   CreateTodoDto,
@@ -80,8 +80,15 @@ export class TodoService {
     );
   }
 
-  async getSharedTask(taskId: string): Promise<unknown> {
-    return networkProvider.requestWithCredentials<unknown>(
+  async unshareTaks(shareTaskDto: ShareTaskDto): Promise<TodoTaskEntity[]> {
+    return networkProvider.requestWithCredentials<TodoTaskEntity[]>(
+      `/task_lists/${shareTaskDto.taskId}/share/${shareTaskDto.user_id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async getSharedTask(taskId: string): Promise<SharedTaskUser[]> {
+    return networkProvider.requestWithCredentials<SharedTaskUser[]>(
       `/task_lists/${taskId}/share`, {
       method: "GET",
     });

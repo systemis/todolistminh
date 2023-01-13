@@ -25,3 +25,11 @@ export class TodoEntity {
     this.done = value;
   }
 }
+
+export class SharedTaskUser {
+  created_at: string;
+  is_write: boolean;
+  task_list_id: number;
+  updated_at: string;
+  user_id: number;
+}

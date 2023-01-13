@@ -107,7 +107,27 @@ export function* shareTask({
   try {
     const getTodoListResponse: TodoTaskEntity[] = yield call(todoService.shareTask, {
       ...payload,
-      is_write: true,
+    });
+    callback && callback(getTodoListResponse);
+  } catch (err) {
+    console.log("error ", err);
+    callback && callback(null);
+  } 
+}
+
+/**
+ * @param payload
+ * @param callback
+ * @dev
+ * Create new task
+ */
+export function* unShareTask({
+  payload,
+  callback,
+}: SagaPayload<ShareTaskDto, unknown>) {
+  try {
+    const getTodoListResponse: TodoTaskEntity[] = yield call(todoService.unshareTaks, {
+      ...payload,
     });
     callback && callback(getTodoListResponse);
   } catch (err) {

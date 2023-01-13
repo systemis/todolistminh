@@ -20,6 +20,7 @@ export function* login({
     storageProvider.setItem("hAccessToken", (loginResponse as any)?.headers?.["access-token"]);
     storageProvider.setItem("client", (loginResponse as any)?.headers?.client);
     storageProvider.setItem("uid", (loginResponse as any)?.headers?.uid);
+    storageProvider.setItem("userData", JSON.stringify((loginResponse as any)?.data?.data));
     callback && callback((loginResponse as any)?.data);
   } catch (err) {
     console.error(err);

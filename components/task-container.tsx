@@ -1,21 +1,23 @@
 import { FC, useEffect, useState, useCallback } from "react";
-import { TodoTaskEntity } from "@/src/entities/todo.entity";
+import { TodoTaskEntity, SharedTaskUser } from "@/src/entities/todo.entity";
 import { useMain } from "@/src/hooks/useMain";
-import { deleteTask, editTask, getUsers, shareTask } from "@/src/redux/actions";
+import { deleteTask, editTask, getUsers, shareTask, unShareTask } from "@/src/redux/actions";
 import Input from '../components/Input'
 import List from '../components/List'
 import useTodos from '../components/hooks/useTodos'
 import { toast } from "react-toastify";
-import { Avatar, List as AntdList, Skeleton, Modal } from 'antd';
-import { getSharedTask } from "@/src/redux/actions";
+import { Avatar, List as AntdList, Skeleton, Modal, Select } from 'antd';
+import { todoService } from "@/src/redux/saga/todo/todo.service";
+import * as Actions from "@/src/redux/actions";
 
 const smapleData = "dsai@gmail.com";
 
-export const TaskContainer: FC<{ task: TodoTaskEntity, shared?: boolean }> = ({ task, shared }) => {
+export const TaskContainer: FC<{ task: TodoTaskEntity, shared?: boolean}> = ({ task, shared }) => {
   const { dispatch, users } = useMain();
   const { addTodo } = useTodos(task?.id?.toString())
   const [taskName, setTaskName] = useState(task?.name);
   const [sharedTodo, setSharedTodo] = useState("");
+  const [sharedTaskUser, setSharedTaskUser] = useState<SharedTaskUser[]>([]);
 
   const [todo, setTodo] = useState({
     name: "",
@@ -28,6 +30,12 @@ export const TaskContainer: FC<{ task: TodoTaskEntity, shared?: boolean }> = ({ 
     completed,
   })
 
+  const reCall = async () => {
+    // dispatch(Actions.getTodoList())
+    const sharedTask: SharedTaskUser[] = await todoService.getSharedTask(task?.id?.toString());
+      setSharedTaskUser(sharedTask);
+  }
+  
   const handleSubmit = () => {
     /** @dev Change */
     addTodo({ ...todo })
@@ -48,15 +56,31 @@ export const TaskContainer: FC<{ task: TodoTaskEntity, shared?: boolean }> = ({ 
       if (!v) return;
       toast("Delete task successfully");
     }))
+
+    reCall();
   }
 
-  const handleShareTask = (user_id: string) => {
+  const handleShareTask = (user_id: string, option: string) => {
+    if (option === "share") return;
+
     dispatch(shareTask({
+      taskId: sharedTodo,
+      user_id,
+      is_write: option === "write" ? true : false,
+    }));
+
+    setSharedTodo("");
+    reCall();
+  }
+
+  const handleUnshareTask = (user_id: string) => {
+    dispatch(unShareTask({
       taskId: sharedTodo,
       user_id,
     }));
 
     setSharedTodo("");
+    reCall();
   }
 
   const handleGetSharedTask = useCallback(async () => {
@@ -64,6 +88,12 @@ export const TaskContainer: FC<{ task: TodoTaskEntity, shared?: boolean }> = ({ 
       // dispatch(getSharedTask({ taskId: task.id.toString() }))
     } catch {}
   }, [task.id])
+
+  useEffect(() => {
+    (async () => {
+      !shared && reCall();
+    })();
+  }, [task?.id, shared]);
 
   useEffect(() => {
     dispatch(getUsers());
@@ -148,10 +178,37 @@ export const TaskContainer: FC<{ task: TodoTaskEntity, shared?: boolean }> = ({ 
           <AntdList
             className="demo-loadmore-list"
             itemLayout="horizontal"
-            dataSource={users}
+            dataSource={
+              users.filter((item: any) => (
+                sharedTaskUser.find(sItem => sItem.user_id === item?.id) !== undefined
+              )).concat(
+                users.filter((item: any) => (
+                  sharedTaskUser.find(sItem => sItem.user_id === item?.id) === undefined
+              )))
+            }
             renderItem={(item: any) => (
               <AntdList.Item
-                actions={[<a key="list-loadmore-edit" onClick={() => handleShareTask(item?.id)}>Share</a>]}
+                actions={[
+                  sharedTaskUser.find(sItem => sItem.user_id === item?.id)
+                    ? <a key="list-loadmore-edit" onClick={() => handleUnshareTask(item?.id)}>Remove</a>
+                    : (
+                      <Select
+                        defaultValue="Share"
+                        onChange={(value) => handleShareTask(item?.id, value)}
+                        className="relative right-[-5px]"
+                        options={[
+                          {
+                            value: 'read',
+                            label: 'Read',
+                          },
+                          {
+                            value: 'write',
+                            label: 'Write',
+                          },
+                        ]}
+                      />
+                    )
+                ]}
               >
                 <Skeleton avatar title={false} loading={item?.loading} active>
                   <AntdList.Item.Meta
