@@ -25,7 +25,7 @@ export default function Home(): ReactElement {
       name: todoName,
     }, (task) => {
       if (!task) return;
-      toast("Create new task succesfully");
+      toast("Create new todo list succesfully");
       setTodoName("");
     }))
   }, [todoName]);
